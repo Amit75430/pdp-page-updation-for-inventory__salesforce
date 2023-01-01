@@ -1,0 +1,34 @@
+@RestResource(urlMapping='/Inventory__c/*')
+global class B2B_InventoryWebServices {
+    @HttpGet
+    global static  Inventory__c getInventoryBySku()
+    {
+        RestRequest req= RestContext.request;
+        RestResponse respon= RestContext.response;
+        String productId= req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
+        Inventory__c inventory= [SELECT id,Commited_stock__c, Stock__c, Product__c,Reserved_stock__c, Current_Stock__c FROM Inventory__c where Product__c=:productId];
+        
+        return inventory;
+    }
+
+
+   @HttpPatch
+    global static Inventory__c updateInventoryBySku()
+    {
+        RestRequest req = RestContext.request;
+        String productId = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
+        Inventory__c upInventory = [SELECT Id,Commited_stock__c, Reserved_stock__c from Inventory__c where Product__c =:productId];
+        Map<String, Object> params = (Map<String, Object>)JSON.deserializeUntyped(req.requestbody.toString());
+        for(String fieldName : params.keySet())
+        {
+            upInventory.put(fieldName, params.get(fieldName));
+        }
+        
+        update upInventory;
+        
+        
+        return upInventory;
+    }
+
+    
+}
