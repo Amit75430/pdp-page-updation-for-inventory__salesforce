@@ -436,6 +436,14 @@ export default class B2bCartContents extends NavigationMixin(LightningElement) {
      */
     handleClearCartButtonClicked() {
         // Step 1: Delete the current cart
+        const updatedCartItems = (this.cartItems || []).map((item) => {
+        // Make a copy of the cart item so that we can mutate it
+         let updatedItem = { ...item };
+          console.log(item.cartItem.cartItemId);
+          reversecart({ cartItemId:item.cartItem.cartItemId} );
+
+
+ });
         deleteCart({
             communityId,
             effectiveAccountId: this.effectiveAccountId,
